@@ -1,0 +1,17 @@
+THE RESPONSE:
+{
+    "username": "ananya1",
+    "password": "sharma",
+    "_id": "65ec1daf44304c13377ed367",
+    "__v": 0
+}
+
+
+
+"username": "ananya1": This indicates that the username of the user is "ananya1".
+"password": "sharma": This indicates that the password of the user is "sharma".
+"_id": "65ec1daf44304c13377ed367": This is the unique identifier (ObjectID) assigned
+by MongoDB to this user document. Each document in a MongoDB collection has a unique _id 
+field.
+"__v": 0: This is the version key added by Mongoose, representing the document's version. 
+Mongoose uses this field for internal versioning control and conflict resolution.

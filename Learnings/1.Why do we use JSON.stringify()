@@ -1,0 +1,15 @@
+We use JSON.stringify() primarily for two main purposes:
+
+Serialization: Serialization refers to the process of converting data 
+structures or objects into a format that can be easily stored 
+(e.g., in a file or database) or transmitted over a network. 
+When we stringify an object using JSON.stringify(), 
+we convert it into a JSON string representation. 
+This string can then be easily transmitted over the
+ network or stored in a file or database.
+
+Data Interchange: JSON (JavaScript Object Notation) is a popular data interchange
+format because it is human-readable and widely supported across different 
+programming languages. By converting objects into JSON strings using JSON.stringify(), 
+we can send data between different systems or applications. The recipient can then 
+parse the JSON string back into an object using JSON.parse().
