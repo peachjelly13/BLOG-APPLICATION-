@@ -6,13 +6,11 @@ const cors = require('cors')
 app.use(cors());
 app.use(express.json());
 const User = require('./models/User')
+const jwt = require('jsonwebtoken')
+const secret = 'qwedfgtrzsdlypup';
 require('dotenv').config(); // Load environment variables from .env file
 const salt = bcrypt.genSaltSync(10);
-
-
-
 //post is used to send data to the server to create/update a resource
-
 mongoose.connect(process.env.MONGO_URI)
 app.post('/register', async (req,res)=>{
     const {username,password} = req.body;
@@ -25,5 +23,24 @@ app.post('/register', async (req,res)=>{
         res.status(400).json(error_message);
 
     }
+})
+app.post('/login',async (req,res)=>{
+    const {username,password} = req.body;
+    const userDoc = await User.findOne({username});
+    const correct_password = bcrypt.compareSync(password,userDoc.password);
+    if(correct_password){
+        jwt.sign({username,id:userDoc._id},secret,{},(err,token)=>{
+            if (err) throw err;
+            res.cookie('token',token).json('ok');
+
+        });
+
+    }
+    else{
+        res.status(400).json('Wrong Credentials');
+    }
+
+
+
 })
 app.listen(5000);
