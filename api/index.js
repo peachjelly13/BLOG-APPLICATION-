@@ -34,7 +34,10 @@ app.post('/login',async (req,res)=>{
     if(correct_password){
         jwt.sign({username,id:userDoc._id},secret,{},(err,token)=>{
             if (err) throw err;
-            res.cookie('token',token).json('ok');
+            res.cookie('token',token).json({
+                id:userDoc._id,
+                username,
+            });
 
         });
 
@@ -53,4 +56,7 @@ app.get('/profile',(req,res)=>{
     });
 
 });
+app.post('/logout',(req,res)=>{
+    res.cookie('token','').json('ok');
+})
 app.listen(5000);
