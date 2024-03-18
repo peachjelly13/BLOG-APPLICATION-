@@ -12,6 +12,10 @@ app.use(cookieParser());
 const secret = 'qwedfgtrzsdlypup';
 require('dotenv').config(); // Load environment variables from .env file
 const salt = bcrypt.genSaltSync(10);
+const multer = require('multer');
+const uploadMiddleware = multer({dest:'uploads/'});
+const fs = require('fs');
+const Post = require('./models/Post')
 
 //post is used to send data to the server to create/update a resource
 mongoose.connect(process.env.MONGO_URI)
@@ -66,5 +70,15 @@ app.get('/profile',(req,res)=>{
 });
 app.post('/logout',(req,res)=>{
     res.cookie('token','').json('ok');
+})
+
+app.post('/post',uploadMiddleware.single('file'),(req,res)=>{
+    const {originalname,path} = req.file;
+    const parts = originalname.split('.');
+    const ext = parts[parts.length-1];
+    const newPath = path+'.'+ext;
+    fs.renameSync(path,newPath);
+    res.json({ext});
+
 })
 app.listen(5000);
