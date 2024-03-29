@@ -16,9 +16,16 @@ const multer = require('multer');
 const uploadMiddleware = multer({dest:'uploads/'});
 const fs = require('fs');
 const Post = require('./models/Post')
+app.use('/uploads',express.static(__dirname+'/uploads'));
 
 //post is used to send data to the server to create/update a resource
-mongoose.connect(process.env.MONGO_URI)
+
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => {
+    console.log('Connected to MongoDB');
+    // Start your application logic here
+  })
+  .catch(err => console.error('Error connecting to MongoDB:', err));
 app.post('/register', async (req,res)=>{
     const{username,password} = req.body;
     try{
@@ -45,7 +52,7 @@ app.post('/login', async (req, res) => {
             jwt.sign({ username, id: userDoc._id }, secret, {}, (err, token) => {
                 if (err) throw err;
                 res.cookie('token', token).json({
-                    id: userDoc._id,
+                    id:userDoc._id,
                     username,
                 });
             });
@@ -95,10 +102,11 @@ app.post('/post',uploadMiddleware.single('file'),async(req,res)=>{
 })
 
 app.get('/post',async(req,res)=>{
-    res.json(await Post.find().populate('author',['username'])
+    res.json(await Post.find()
+    .populate('author',['username'])
     .sort({createdAt:-1})
     .limit(20)
-    
+
     );
 });
 app.listen(5000);
