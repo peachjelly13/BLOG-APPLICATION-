@@ -20,7 +20,7 @@ const Post = require('./models/Post')
 //post is used to send data to the server to create/update a resource
 mongoose.connect(process.env.MONGO_URI)
 app.post('/register', async (req,res)=>{
-    const {username,password} = req.body;
+    const{username,password} = req.body;
     try{
     const UserDoc = await User.create({username,password:bcrypt.hashSync(password,salt),});
     res.json(UserDoc);
@@ -32,7 +32,7 @@ app.post('/register', async (req,res)=>{
     }
 })
 app.post('/login', async (req, res) => {
-    const { username, password } = req.body;
+    const {username, password} = req.body;
     try {
         const userDoc = await User.findOne({ username });
         if (!userDoc) {
@@ -78,19 +78,27 @@ app.post('/post',uploadMiddleware.single('file'),async(req,res)=>{
     const ext = parts[parts.length-1];
     const newPath = path+'.'+ext;
     fs.renameSync(path,newPath);
-    const{title,summary,content} = req.body;
-    const PostDoc = await Post.create({
+    const {token} = req.cookies;
+    jwt.verify(token,secret,{},async(err,info)=>{
+        if(err) throw err;
+        const{title,summary,content} = req.body;
+        const PostDoc = await Post.create({
         title,
         summary,
         content,
-        cover:newPath
-
-    })
+        cover:newPath,
+        author:info.id,
+    });
     res.json(PostDoc);
+    });
 
 })
 
 app.get('/post',async(req,res)=>{
-    res.json(await Post.find())
-})
+    res.json(await Post.find().populate('author',['username'])
+    .sort({createdAt:-1})
+    .limit(20)
+    
+    );
+});
 app.listen(5000);
