@@ -7,7 +7,7 @@ export const Header = () => {
   const {setUserInfo,userInfo} = useContext(UserContext);
   
   useEffect(()=>{
-    fetch('http://localhost:5000/profile',{
+    fetch('http://localhost:2000/profile',{
       credentials:'include',
     }).then(response=>{
       response.json().then(userInfo=>{
@@ -17,7 +17,7 @@ export const Header = () => {
   },[]);
 
   function logout(){
-    fetch('http://localhost:5000/logout',{
+    fetch('http://localhost:2000/logout',{
       credentials:'include',
       method:'POST',
     });
@@ -27,11 +27,11 @@ export const Header = () => {
   const username = userInfo?.username;
   return (
     <header>
-        <Link to ="/" className="logo">Blogs</Link>
+        <Link to ="/" className="logo">Your Memoir</Link>
         <nav>
           {username &&(
             <>
-            <Link to="/create">Create New Blog</Link>
+            <Link to="/create">Save a Memory</Link>
             <a onClick={logout}>Logout</a>
             </>
           )}

@@ -149,6 +149,6 @@ app.get('/post/:id', async (req, res) => {
     res.json(postDoc);
 });
 
-app.listen(5000);
+app.listen(2000);
 
 
